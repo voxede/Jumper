@@ -46,7 +46,7 @@ class Level
 		_file.addEventListener(Event.COMPLETE, onSaveComplete);
 		_file.addEventListener(Event.CANCEL, onSaveCancel);
 		_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-		_file.save(output.toString(), "writeTest.json"); // binary to string error
+		_file.save(output.toString(), "writeTest.json"); // binary to string error.
 	}
 
 	function onSaveComplete(_):Void
