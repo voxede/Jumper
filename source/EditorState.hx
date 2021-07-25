@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.shapes.FlxShapeGrid;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -11,8 +12,10 @@ class EditorState extends FlxState
 {
 	private static inline var TILE_SIZE = 32;
 
-	private var spikes:FlxTypedGroup<Spike>;
+	private var spikes:FlxTypedGroup<FlxSprite>;
 	private var grid:FlxShapeGrid;
+
+	private var level:Level;
 
 	override public function create()
 	{
@@ -22,11 +25,11 @@ class EditorState extends FlxState
 		grid = new FlxShapeGrid(0, 0, 32, 32, 32, 32, {thickness: 1, color: FlxColor.GRAY}, FlxColor.WHITE);
 		add(grid);
 
-		spikes = new FlxTypedGroup<Spike>();
+		spikes = new FlxTypedGroup<FlxSprite>();
 		add(spikes);
 
+		level = new Level();
 		loadLevel('testLevel');
-		Level.writeJson(spikes);
 
 		FlxG.camera.zoom = 1;
 	}
@@ -44,7 +47,10 @@ class EditorState extends FlxState
 			deleteSpike();
 		}
 
-		// trace(pixelsToTiles(FlxG.mouse.x, FlxG.mouse.y));
+		if (FlxG.keys.justPressed.S)
+		{
+			level.writeJson(spikes);
+		}
 	}
 
 	private function addSpike()
@@ -57,11 +63,11 @@ class EditorState extends FlxState
 
 	private function deleteSpike()
 	{
-		spikes.forEach(function _(spike:Spike)
+		spikes.forEach(function _(tile:FlxSprite)
 		{
-			if (FlxG.mouse.overlaps(spike, FlxG.camera))
+			if (FlxG.mouse.overlaps(tile, FlxG.camera))
 			{
-				spike.kill();
+				tile.kill();
 			}
 		});
 	}
@@ -80,7 +86,7 @@ class EditorState extends FlxState
 
 	public function loadLevel(levelName:String)
 	{
-		var data:Array<Array<Int>> = Level.loadFromJson(levelName);
+		var data:Array<Array<Int>> = level.loadFromJson(levelName);
 
 		for (i in 0...data.length)
 		{
